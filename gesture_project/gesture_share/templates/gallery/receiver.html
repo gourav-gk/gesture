@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Receiver</title>
+    {% load static %}
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.1/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.2/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.1/hands.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        video, canvas {
+            display: block;
+            max-width: 100%;
+        }
+        #image-container {
+            margin-top: 20px;
+        }
+        #shared-image {
+            height: 0; 
+            transition: height 1s ease, opacity 1s ease; 
+        }
+
+        #shared-image.image-loaded {
+            height: 100vh; 
+            opacity: 1; 
+        }
+    </style>
+</head>
+<body>
+    <video style="display:none;" id="camera-feed" autoplay muted playsinline></video>
+    <canvas style="display:none;" id="output-canvas"></canvas>
+    <div id="image-container"></div>
+
+    <script>
+        const imageContainer = document.getElementById('image-container')
+
+        function performOPeration(landmarks,results)
+        {
+            const isOpen = detectOpenHand(landmarks);
+
+            if (isOpen && !isHandOpenDetected) {
+                isHandOpenDetected = true;
+                checkImageFromDatabase();
+            }
+        }
+
+    </script>
+    <script src="{% static 'script.js' %}"></script>
+</body>
+</html>

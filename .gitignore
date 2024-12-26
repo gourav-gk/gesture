@@ -1,0 +1,7 @@
+.idea
+cert.crt
+cert.key
+server.crt
+server.key
+gesture_project/node_modules
+gesture_project/media/images/

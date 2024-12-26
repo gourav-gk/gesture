@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ image.title }}</title>
+    {% load static %}
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils@0.1/control_utils.css" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.1/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils@0.1/control_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.2/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.1/hands.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <img id="display-image" src="{{ image.image.url }}" alt="{{ image.title }}" style="height: 100vh;transition: opacity 3s, height 3s;">
+    <p>{{ image.title }}</p>
+    <div>
+        <video style="display:none;" id="camera-feed" autoplay muted playsinline></video>
+        <canvas style="display:none;" id="output-canvas"></canvas>
+    </div>
+    <a href="{% url 'home' %}">Back to Gallery</a>
+
+    
+<script>
+    const displayImage = document.getElementById('display-image');
+
+    function performOPeration(landmarks,results)
+    {
+        const isClose = detectClose(landmarks);
+        if (isClose && !isHandCloseTriggered) {
+        // Start a timer when a close hand is detected
+        if (!handCloseTimeout) {
+            handCloseTimeout = setTimeout(() => {
+                handCloseTriggered();
+            }, 500);
+        }
+        } else if (!isClose) {
+            // Reset the timer if the hand is not close anymore
+            clearTimeout(handCloseTimeout);
+            handCloseTimeout = null;
+        }
+    }
+</script>
+<script src="{% static 'script.js' %}"></script>
+</body>
+</html>

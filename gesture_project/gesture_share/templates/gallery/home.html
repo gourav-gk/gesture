@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Gallery</title>
+    <style>
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        .grid img {
+            width: 100%;
+            height: auto;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Image Gallery</h1>
+    <div class="grid">
+        {% for image in images %}
+            <a href="{% url 'image_detail' image.id %}">
+                <img src="{{ image.image.url }}" alt="{{ image.title }}">
+            </a>
+        {% endfor %}
+    </div>
+    <a href="{% url 'admin:index' %}">Add Images</a>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gesture Click</title>
+    {% load static %}
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.1/camera_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.1/hands.js"></script>
+</head>
+<body>
+    <h1>Hand Close Detection</h1>
+    <video id="camera-feed" autoplay muted playsinline></video>
+    <canvas style="display:hidden" id="output-canvas"></canvas>
+    <script>
+        const canvasElement = document.getElementById('output-canvas');
+        const canvasCtx = canvasElement.getContext('2d');
+        let handClosed = false;
+
+
+        function performOPeration(landmark,results)
+        {
+            canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+            canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+            const isClosed = detectClose(landmark);
+            if (isClosed && !handClosed) {
+                    handClosed = true;
+
+                    // Capture image after 1 second
+                    setTimeout(() => {
+                        canvasElement.toBlob((blob) => {
+                            const formData = new FormData();
+                            formData.append('image', blob, 'captured_image.png');
+
+                            fetch('/capture_image/', {
+                                method: 'POST',
+                                headers: {
+                                    'X-CSRFToken': '{{ csrf_token }}'
+                                },
+                                body: formData
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    stopCamera(videoElement)
+                                    shareImage(data.image_name.split('/')[1])
+                                } else {
+                                    alert('Failed to upload image.');
+                                }
+                                handClosed = false; // Reset the state
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                handClosed = false; // Reset the state
+                            });
+                        });
+                    }, 2000);
+                }
+        }
+
+    </script>
+    <script src="{% static 'script.js' %}"></script>
+</body>
+</html>
